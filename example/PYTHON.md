@@ -88,9 +88,13 @@ packageId = 1234
 s3Files = []
 
 # Load in and process the manifest file.
+# Not all manifest files are structured like this, all you require is
+# an S3 url and a package that has the files associated with it.
 with open('datastructure_manifest.txt', 'r') as manifest:
-    for row in csv.reader(manifest, dialect='excel-tab'):
-        s3Files.append(row[5])
+    for rows in csv.reader(manifest, dialect='excel-tab'):
+        for row in rows:
+            if row.startsWith('s3://'):
+                s3Files.append(row)
 
 # The manifest files have their column declarations listed twice, trim those out
 s3Files = s3Files[2:]

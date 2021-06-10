@@ -107,22 +107,25 @@ file references to Package Service files:
 // Handle reading in the file and adding the urls to a list.
 ArrayList<String> s3Urls = new ArrayList<>();
 
-String row;
+// Not all manifest files are the same, all that really matters
+// for this approach is loading the S3 paths, and having a package
+// that has all of the S3 files associated with it.
+String rows;
 // Open reader and read in data.
 BufferedReader reader = new BufferedReader(new FileReader("datastructure_manifest.txt"));
-while ((row = reader.readLine()) != null) {
-    // Split on whatever your delimiter is, in this example it'll be a tab character.
-    String[] columns = row.split("\t");
-    
-    // Remove any extra information on the data, in this case, urls are surrounded with "", so remove those.
-    String s3 = columns[5].replace("\"", "");
-    
-    // Filter any 'metadata' by only keeping strings that are s3 urls.
-    if (!s3.startsWith("s3://")) {
-        continue;
+while ((rows = reader.readLine()) != null) {
+    String[] data = rows.split("\t");
+
+    for (String row : data) {
+        // Sanatize
+        String s3 = row.replace("\"", "");
+
+        if (!s3.startsWith("s3://")) {
+            continue;
+        }
+
+        s3Urls.add(s3);
     }
-    
-    s3Urls.add(s3);
 }
 
 // Make a Gson object for decoding the JSON responses.
