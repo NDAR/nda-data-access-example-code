@@ -137,7 +137,7 @@ for url in results:
     files[url['package_file_id']]['download'] = url['downloadURL']
 
 # Iterate on file id and it's data to perform the downloads.
-for id, data in files:
+for id, data in files.items():
     name = data['name']
     downloadUrl = data['download']
     # Create a downloads directory
